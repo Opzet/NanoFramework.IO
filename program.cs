@@ -90,7 +90,24 @@ namespace ScanWiFi
 
         static void Adxl345_i2c_Test()
         {
-            
+            //////////////////////////////////////////////////////////////////////
+https://www.analog.com/media/en/technical-documentation/data-sheets/ADXL345.pdf
+
+Refer Page 10.
+
+I2C
+-- -
+With CS tied high to VDD I/ O, the ADXL345 is in I2C mode, requiring a simple 2 - wire connection
+
+With the ALT ADDRESS pin high, the 7 - bit I2C address for the device is 0x1D, followed by the R / W bit.This translates to 0x3A for a write and 0x3B for a read.
+
+
+An alternate I2C address of 0x53(followed by the R / W bit) can be chosen by grounding the ALT ADDRESS pin(Pin 12). This translates to 0xA6 for a write and 0xA7 for a read. 
+
+There are no internal pull-up or pull-down resistors for any unused pins; therefore, there is no known state or default state for the CS or ALT ADDRESS pin if left floating or unconnected.
+
+It is required that the CS pin be connected to VDD I/O and that the ALT ADDRESS pin be connected to either VDD I/O or GND when using I2C.
+
             //////////////////////////////////////////////////////////////////////
             // when connecting to an ESP32 device,
             // configure the I2C GPIOs used for the bus
