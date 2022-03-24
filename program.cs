@@ -108,7 +108,7 @@ namespace ScanWiFi
             {
                 // read data
                 Vector3 data = sensor.ReadI2CAccel();
-                Debug.WriteLine($"#{i}");
+                Debug.WriteLine($"#{i++}");
                 Debug.WriteLine($"X: {data.X.ToString("0.00")} g");
                 Debug.WriteLine($"Y: {data.Y.ToString("0.00")} g");
                 Debug.WriteLine($"Z: {data.Z.ToString("0.00")} g");
@@ -187,7 +187,7 @@ namespace ScanWiFi
             while (true)
             {
                 Vector3 data = MotionSensor.Acceleration;
-                Debug.WriteLine($"#{i}");
+                Debug.WriteLine($"#{i++}");
                 Debug.WriteLine($"X: {data.X.ToString("0.00")} g");
                 Debug.WriteLine($"Y: {data.Y.ToString("0.00")} g");
                 Debug.WriteLine($"Z: {data.Z.ToString("0.00")} g\r\n");
