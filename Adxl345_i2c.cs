@@ -129,10 +129,6 @@ namespace Iot.Device.ADXL354_I2C
             {
                 Debug.WriteLine($"No Device present");
             }
-            
-
-
-
         }
       
 
