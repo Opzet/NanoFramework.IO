@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Device.I2c;
+using System.Diagnostics;
 using System.Numerics;
 using Iot.Device.Adxl345;
 
@@ -63,6 +64,8 @@ namespace Iot.Device.ADXL354_I2C
             WriteRegister ( Register.ACCEL_REG_POWER_CONTROL, 0x08 );                       /* 0x08 puts the accelerometer into measurement mode */
         }
 
+
+      
 
         public Vector3 ReadI2CAccel()
         {

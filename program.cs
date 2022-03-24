@@ -14,7 +14,7 @@
 // Execute cmd to ESP32 Nano firmware (change comport to match)
 // > nanoff --update --platform esp32 --preview --serialport COM7 -v diag
 
-#region v1.7.4-p.114_ firmware
+#region  1.7.4-preview.125_firmware
 
 // Sometimes it is tricky to match the embedded Firmware native assembly with nuget packages
 // https://docs.nanoframework.net/content/getting-started-guides/guide-version-checksums.html
@@ -22,7 +22,7 @@
 // The firmware version is independent from the assembly versions,
 // but the latest firmware always uses the latest native assembly versions and will work with the latest NuGet package versions of a component
 
-// 1.7.4 - preview.114
+//  1.7.4-preview.125
 //Native Assemblies:
 //  mscorlib v100.5.0.17, checksum 0x004CF1CE
 //  nanoFramework.Runtime.Native v100.0.9.0, checksum 0x109F6F22
@@ -135,23 +135,23 @@ namespace ScanWiFi
             I2cConnectionSettings i2CConnectionSettings = new I2cConnectionSettings(1, ADXL354_I2C.DefaultI2CAddress);
             I2cDevice device = I2cDevice.Create(i2CConnectionSettings);
 
-            using ADXL354_I2C sensor = new ADXL354_I2C(device, GravityRange.Range16);
-
-            int i = 0;
-            while (true)
+            using (ADXL354_I2C sensor = new ADXL354_I2C(device, GravityRange.Range16) )
             {
-                // read data
-                Vector3 data = sensor.ReadI2CAccel();
-                Debug.WriteLine($"#{i++}");
-                Debug.WriteLine($"X: {data.X.ToString("0.00")} g");
-                Debug.WriteLine($"Y: {data.Y.ToString("0.00")} g");
-                Debug.WriteLine($"Z: {data.Z.ToString("0.00")} g");
-                Debug.WriteLine("\r\n");
-                // wait for 500ms
-                Thread.Sleep(500);
+
+                int i = 0;
+                while (true)
+                {
+                    // read data
+                    Vector3 data = sensor.ReadI2CAccel();
+                    Debug.WriteLine($"#{i++}");
+                    Debug.WriteLine($"X: {data.X.ToString("0.00")} g");
+                    Debug.WriteLine($"Y: {data.Y.ToString("0.00")} g");
+                    Debug.WriteLine($"Z: {data.Z.ToString("0.00")} g");
+                    Debug.WriteLine("\r\n");
+                    // wait for 500ms
+                    Thread.Sleep(500);
+                }
             }
-
-
         }        
         static void ADXL345_Spi_Test()
         {
