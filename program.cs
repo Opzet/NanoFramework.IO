@@ -73,7 +73,7 @@ namespace ScanWiFi
 {
     public class Program
     {
-        
+       
         public static void Main()
         {
             Debug.WriteLine($"\r\n\r\n\r\n\r\n\r\n\r\n--------- Startup {DateTime.UtcNow.AddHours(8).ToString("hh:mm tt")} ---------------------");
@@ -83,14 +83,22 @@ namespace ScanWiFi
             //SWitched to i2c 
             Adxl345_i2c_Test();
 
-            
-           
         }
 
 
         static void Adxl345_i2c_Test()
         {
-            
+            // Note: Depending on your ADXL345 chip pcb
+            // A carrier pcb will have Voltage regulators, pullup and biasing resitors .
+            // https://www.best-microcontroller-projects.com/adxl345.html
+            //CS is pulled high by a 10k resistor (active). Can be 4k7 on some boards.
+            //ADDR(SDO) is pulled low by a 4k7 resistor.
+            //SCL is pulled high to 3V3 by a 4k7 resistor.
+            //SDA is pulled high to 3V3 by a 4k7 resistor.
+            //VDDIO is connected to VS and both connect to 3V3.
+
+            // if it a true 345 breakout pcb, Vs may not be connected to the supply rail 
+
             //https://www.analog.com/media/en/technical-documentation/data-sheets/ADXL345.pdf
             
             // Refer Page 10. 
@@ -98,13 +106,16 @@ namespace ScanWiFi
             // I2C 
             // ---
             // With CS tied high to VDD I/O, the ADXL345 is in I2C mode, requiring a simple 2-wire connection
-            
-            // With the ALT ADDRESS pin high, the 7-bit I2C address for the device is 0x1D, followed by the R/W bit.
+                // static GpioController controller = new();
+                //  controller.OpenPin(_CS, PinMode.Output); //Can hardwire rather than using GPIO
+                //  controller.Write(_CS, PinValue.High);
+          
+            // With the SDO/ALT ADDRESS pin high, the 7-bit I2C address for the device is 0x1D, followed by the R/W bit.
             // This translates to 0x3A for a write and 0x3B for a read.
             
             // An alternate I2C address of 0x53 (followed by the R/W bit) can be chosen by grounding the ALT ADDRESS pin (Pin 12). 
             // This translates to 0xA6 for a write and 0xA7 for a read. 
-            
+           
             // There are no internal pull-up or pull-down resistors for any unused pins; therefore,
             // there is no known state or default state for the CS or ALT ADDRESS pin if left floating or unconnected. 
             
@@ -114,6 +125,9 @@ namespace ScanWiFi
             //////////////////////////////////////////////////////////////////////
             // when connecting to an ESP32 device,
             // configure the I2C GPIOs used for the bus
+
+            //Defaults are  I2C1	SDA - GPIO 18	CLK - GPIO 19
+
             Configuration.SetPinFunction(21, DeviceFunction.I2C1_DATA);
             Configuration.SetPinFunction(22, DeviceFunction.I2C1_CLOCK);
 
