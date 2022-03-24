@@ -55,6 +55,7 @@ namespace Iot.Device.ADXL354_I2C
         {
             _i2CDevice = i2CDevice ?? throw new ArgumentNullException(nameof(i2CDevice));
             AccelerometerRange = accelerometerRange;
+
         }
 
         public void SetupDefault()
@@ -64,7 +65,75 @@ namespace Iot.Device.ADXL354_I2C
             WriteRegister ( Register.ACCEL_REG_POWER_CONTROL, 0x08 );                       /* 0x08 puts the accelerometer into measurement mode */
         }
 
+        public void IsDevicePresent()
+        {
+           
+            byte result = _i2CDevice.ReadByte();
 
+            byte[] array = new byte[1];
+
+            I2cTransferResult txfrResult = _i2CDevice.Read(array);
+            
+            switch ( txfrResult.Status)
+            {
+                case I2cTransferStatus.UnknownError:
+                    Debug.WriteLine("I2cTransferStatus.UnknownError");
+                    ////     The transfer failed for an unknown reason.
+                    break;           
+                case I2cTransferStatus.FullTransfer:
+                    Debug.WriteLine("I2cTransferStatus.FullTransfer");
+                    //// Summary:
+                    ////     The data was entirely transferred. For WriteRead, the data for both the write
+                    ////     and the read operations was entirely transferred. For this status code, the value
+                    ////     of the System.Device.I2c.I2cTransferResult.BytesTransferred member that the method
+                    ////     returns is the same as the size of the buffer you specified when you called the
+                    ////     method, or is equal to the sum of the sizes of two buffers that you specified
+                    ////     for WriteRead.
+                    break;
+                case I2cTransferStatus.PartialTransfer:
+                    Debug.WriteLine("I2cTransferStatus.PartialTransfer");
+                    /// //// Summary:
+                    ////     The I2C device negatively acknowledged the data transfer before all of the data
+                    ////     was transferred. For this status code, the value of the System.Device.I2c.I2cTransferResult.BytesTransferred
+                    ////     member that the method returns is the number of bytes actually transferred. For
+                    ////     System.Device.I2c.I2cDevice.WriteRead(System.SpanByte,System.SpanByte), the value
+                    ////     is the sum of the number of bytes that the operation wrote and the number of
+                    ////     bytes that the operation read.
+                    break;
+                case I2cTransferStatus.SlaveAddressNotAcknowledged:
+                    Debug.WriteLine("I2cTransferStatus.SlaveAddressNotAcknowledged");
+                    //// Summary:
+                    ////     The bus address was not acknowledged. For this status code, the value of the
+                    ////     System.Device.I2c.I2cTransferResult.BytesTransferred member that the method returns
+                    ////     of the method is 0.
+                    break;
+                case I2cTransferStatus.ClockStretchTimeout:
+                    Debug.WriteLine("I2cTransferStatus.ClockStretchTimeout:");
+                    //// Summary:
+                    ////     The transfer failed due to the clock being stretched for too long. Ensure the
+                    ////     clock line is not being held low.
+                    break;
+            }
+
+            if (txfrResult.BytesTransferred >= 1)
+            {
+                //Should equal address ACCEL_I2C_ADDR
+                int i = 0;
+                foreach (byte reply in array)
+                {
+                    Debug.WriteLine($"Data[{i}] = {reply}");
+                    i++;
+                }
+            }
+            else
+            {
+                Debug.WriteLine($"No Device present");
+            }
+            
+
+
+
+        }
       
 
         public Vector3 ReadI2CAccel()

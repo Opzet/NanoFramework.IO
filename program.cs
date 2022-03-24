@@ -100,25 +100,25 @@ namespace ScanWiFi
             // if it a true 345 breakout pcb, Vs may not be connected to the supply rail 
 
             //https://www.analog.com/media/en/technical-documentation/data-sheets/ADXL345.pdf
-            
+
             // Refer Page 10. 
-            
+
             // I2C 
             // ---
             // With CS tied high to VDD I/O, the ADXL345 is in I2C mode, requiring a simple 2-wire connection
-                // static GpioController controller = new();
-                //  controller.OpenPin(_CS, PinMode.Output); //Can hardwire rather than using GPIO
-                //  controller.Write(_CS, PinValue.High);
-          
+            // static GpioController controller = new();
+            //  controller.OpenPin(_CS, PinMode.Output); //Can hardwire rather than using GPIO
+            //  controller.Write(_CS, PinValue.High);
+
             // With the SDO/ALT ADDRESS pin high, the 7-bit I2C address for the device is 0x1D, followed by the R/W bit.
             // This translates to 0x3A for a write and 0x3B for a read.
-            
+
             // An alternate I2C address of 0x53 (followed by the R/W bit) can be chosen by grounding the ALT ADDRESS pin (Pin 12). 
             // This translates to 0xA6 for a write and 0xA7 for a read. 
-           
+
             // There are no internal pull-up or pull-down resistors for any unused pins; therefore,
             // there is no known state or default state for the CS or ALT ADDRESS pin if left floating or unconnected. 
-            
+
             // It is required that the CS pin be connected to VDD I/O and that the ALT ADDRESS pin be connected to either VDD I/O or GND 
             // when using I2C.
 
@@ -127,16 +127,24 @@ namespace ScanWiFi
             // configure the I2C GPIOs used for the bus
 
             //Defaults are  I2C1	SDA - GPIO 18	CLK - GPIO 19
+            int default_I2C1_DATA = Configuration.GetFunctionPin(DeviceFunction.I2C1_DATA);
+            int default_I2C1_CLOCK = Configuration.GetFunctionPin(DeviceFunction.I2C1_CLOCK);
 
             Configuration.SetPinFunction(21, DeviceFunction.I2C1_DATA);
             Configuration.SetPinFunction(22, DeviceFunction.I2C1_CLOCK);
 
+            int new_I2C1_DATA = Configuration.GetFunctionPin(DeviceFunction.I2C1_DATA);
+            int new_I2C1_CLOCK = Configuration.GetFunctionPin(DeviceFunction.I2C1_CLOCK);
 
-            I2cConnectionSettings i2CConnectionSettings = new I2cConnectionSettings(1, ADXL354_I2C.DefaultI2CAddress);
+
+            I2cConnectionSettings i2CConnectionSettings = new I2cConnectionSettings(1, ADXL354_I2C.DefaultI2CAddress, I2cBusSpeed.StandardMode);
+            
             I2cDevice device = I2cDevice.Create(i2CConnectionSettings);
+
 
             using (ADXL354_I2C sensor = new ADXL354_I2C(device, GravityRange.Range16) )
             {
+                sensor.IsDevicePresent();
 
                 int i = 0;
                 while (true)
